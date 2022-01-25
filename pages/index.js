@@ -1,4 +1,4 @@
-import { Box, Button, Text, TextField, Image } from '@skynexui/components'
+import { Box, Button, Text, TextField, Image, Icon } from '@skynexui/components'
 import React from 'react';
 import appConfig from '../config.json'
 import { useRouter } from 'next/router'
@@ -31,10 +31,11 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
     // const username = 'IrineuAlmeidaJr';
-    const [username, setUsername] = React.useState('IrineuAlmeidaJr')
+    const [username, setUsername] = React.useState('')
+    const [imagePadrao, setImagePadrao] = React.useState('https://camo.githubusercontent.com/34cc5c8b4ea4d92190f579a8f03e0b8c663b0788653bf6a378026464f5573286/68747470733a2f2f6f63746f6465782e6769746875622e636f6d2f696d616765732f6a65747061636b746f6361742e706e67')
     const roteamento = useRouter();
 
-    console.log(roteamento)
+    // console.log(roteamento)
 
     return (
         <>
@@ -69,11 +70,13 @@ export default function PaginaInicial() {
                             // Abaixo vou impedir o comportamento padrão
                             // de recarregar a página.
                             infosDoEvento.preventDefault() 
-                            console.log('Alguem submeteu o form')
-                            roteamento.push('/chat')
+                            console.log('Alguem submeteu o form')                            
                             // Forma de Chamar a Página (no caso chat)
                             // window.location.href = '/chat'
-
+                            const numLetras = username.length
+                            if(numLetras > 2) {
+                                roteamento.push('/chat')
+                            } 
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -87,12 +90,20 @@ export default function PaginaInicial() {
 
                         <TextField
                             value={username}
+                            name='nomeUsuario'
+                            placeholder='Digite nome do usuário...'
                             onChange={function handler(event) {
-                                console.log('Usuario digitou', event.target.value)
+                                // console.log('Usuario digitou', event.target.value)
                                 // O valor está dentro de event
                                 const valor = event.target.value
-                                // Troca o valor da variável abaixo como set
+                                // Troca o valor da variável abaixo como set,
+                                // só mudar ao terminar onChange
                                 setUsername(valor)
+                                if(valor.length > 2) {
+                                    setImagePadrao(`https://github.com/${valor}.png`)
+                                } else {
+                                    setImagePadrao('https://camo.githubusercontent.com/34cc5c8b4ea4d92190f579a8f03e0b8c663b0788653bf6a378026464f5573286/68747470733a2f2f6f63746f6465782e6769746875622e636f6d2f696d616765732f6a65747061636b746f6361742e706e67')
+                                }
                             }}
                             fullWidth
                             textFieldColors={{
@@ -132,9 +143,9 @@ export default function PaginaInicial() {
                             alignItems: 'center',
                             maxWidth: '200px',
                             padding: '16px',
-                            backgroundColor: appConfig.theme.colors.neutrals[800],
+                            backgroundColor: appConfig.theme.colors.neutrals["1000"],
                             border: '1px solid',
-                            borderColor: appConfig.theme.colors.neutrals[999],
+                            borderColor: appConfig.theme.colors.neutrals["1100"],
                             borderRadius: '10px',
                             flex: 1,
                             minHeight: '240px',
@@ -145,19 +156,35 @@ export default function PaginaInicial() {
                                 borderRadius: '50%',
                                 marginBottom: '16px',
                             }}
-                            src={`https://github.com/${username}.png`}
+                            src={imagePadrao}
+                            //src={`https://github.com/${username}.png`}
                         />
+
+                                               
                         <Text
                             variant="body4"
                             styleSheet={{
+                                display: 'flex',
+                                // 'flex-wrap': 'wrap',
+                                overflow: 'hidden',
+                                width: '100%',
                                 color: appConfig.theme.colors.neutrals[200],
-                                backgroundColor: appConfig.theme.colors.neutrals[900],
-                                padding: '3px 10px',
-                                borderRadius: '1000px'
+                                backgroundColor: appConfig.theme.colors.neutrals[1100],
+                                padding: '10px 15px',
+                                borderRadius: '15px',
+                                fontSize: '14px'
                             }}
                         >
-                            {username}
-                        </Text>
+                            <Icon
+                                label="Icon Component"s
+                                styleSheet={{
+                                    'margin-right': '10px'                                        
+                                }}
+                                name='FaUserAlt'
+                            />
+                            {username}                      
+                        </Text>                            
+                        
                     </Box>
                     {/* Photo Area */}
                 </Box>
