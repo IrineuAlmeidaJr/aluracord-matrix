@@ -33,6 +33,8 @@ export default function PaginaInicial() {
     // const username = 'IrineuAlmeidaJr';
     const [username, setUsername] = React.useState('')
     const [imagePadrao, setImagePadrao] = React.useState('https://camo.githubusercontent.com/34cc5c8b4ea4d92190f579a8f03e0b8c663b0788653bf6a378026464f5573286/68747470733a2f2f6f63746f6465782e6769746875622e636f6d2f696d616765732f6a65747061636b746f6361742e706e67')
+    const [displayFotoUsuario, setDisplayFotoUsuario] = React.useState('none')
+    const [espacoFotoUsuario, setEspacoFotoUsuario] = React.useState('1')
     const roteamento = useRouter();
 
     // console.log(roteamento)
@@ -60,7 +62,6 @@ export default function PaginaInicial() {
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                         backgroundColor: appConfig.theme.colors.neutrals[700],
-            
                     }}
                 >
                     {/* Formulário */}
@@ -80,7 +81,7 @@ export default function PaginaInicial() {
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
+                            width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px', 'flex-grow': espacoFotoUsuario
                         }}
                     >
                         <Titulo tag="h2">Boas vindas de volta!</Titulo>
@@ -100,9 +101,12 @@ export default function PaginaInicial() {
                                 // só mudar ao terminar onChange
                                 setUsername(valor)
                                 if(valor.length > 2) {
+                                    setDisplayFotoUsuario('flex')
+                                    setEspacoFotoUsuario('0')
                                     setImagePadrao(`https://github.com/${valor}.png`)
                                 } else {
-                                    setImagePadrao('https://camo.githubusercontent.com/34cc5c8b4ea4d92190f579a8f03e0b8c663b0788653bf6a378026464f5573286/68747470733a2f2f6f63746f6465782e6769746875622e636f6d2f696d616765732f6a65747061636b746f6361742e706e67')
+                                    setDisplayFotoUsuario('none')
+                                    setEspacoFotoUsuario('1')
                                 }
                             }}
                             fullWidth
@@ -138,7 +142,7 @@ export default function PaginaInicial() {
                     {/* Photo Area */}
                     <Box
                         styleSheet={{
-                            display: 'flex',
+                            display: displayFotoUsuario,
                             flexDirection: 'column',
                             alignItems: 'center',
                             maxWidth: '200px',
@@ -168,15 +172,16 @@ export default function PaginaInicial() {
                                 // 'flex-wrap': 'wrap',
                                 overflow: 'hidden',
                                 width: '100%',
+                                height: '35px',
                                 color: appConfig.theme.colors.neutrals[200],
                                 backgroundColor: appConfig.theme.colors.neutrals[1100],
-                                padding: '10px 15px',
+                                padding: '12px 15px',
                                 borderRadius: '15px',
                                 fontSize: '14px'
                             }}
                         >
                             <Icon
-                                label="Icon Component"s
+                                label="Icon Component"
                                 styleSheet={{
                                     'margin-right': '10px'                                        
                                 }}
