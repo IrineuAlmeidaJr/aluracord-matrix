@@ -1,22 +1,47 @@
 import { Box, Text, TextField, Icon, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+// Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4NjA1OCwiZXhwIjoxOTU4ODYyMDU4fQ.eAMsoDvguB-_GBpBERnOx0Fa3GVNOUwqOnIXRRdSZr8'
+const SUPABASE_URL = 'https://vvgqvqwhqjxpduwapjzq.supabase.co'
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
 
+    React.useEffect(() => {
+        supabaseClient 
+            .from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                setListaMensagens(data)
+            })
+    }, []);
+
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listaMensagens.length + 1,
+            // ID gerando no banco de dados (autocomplete) 
+            // id: listaMensagens.length + 1,
             de: 'irineualmeidajr',
             texto: novaMensagem
         }
         // Depois é só colocar aqui a Chamada de um backend
-        setListaMensagens([
-            mensagem,
-            ...listaMensagens // Espalhamento
-        ])
+        supabaseClient
+            .from('mensagens')
+            // No isert tem que ser objetos com os mesmos campos
+            .insert([mensagem])
+            .then(({ data }) => {
+                setListaMensagens([
+                    data[0],
+                    ...listaMensagens // Espalhamento
+                ])
+                console.log('Criando mensagem', data)
+            })
+       
         setMensagem('')
     }
 
@@ -77,7 +102,6 @@ export default function ChatPage() {
                         <TextField
                             value={mensagem}
                             onChange={(event) => {
-                                console.log(event)
                                 const valor = event.target.value;
                                 setMensagem(valor)
                             }}
@@ -102,7 +126,7 @@ export default function ChatPage() {
                         />
                         <Button
                             label="Enviar"
-                            onClick={()=> handleNovaMensagem(mensagem)}
+                            onClick={() => handleNovaMensagem(mensagem)}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["500"],
                                 mainColor: appConfig.theme.colors.primary[500],
@@ -119,7 +143,6 @@ export default function ChatPage() {
                                 },
                             }}
                         />
-
                     </Box>
                 </Box>
             </Box>
