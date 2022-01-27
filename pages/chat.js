@@ -1,4 +1,4 @@
-import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { Box, Text, TextField, Icon, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
 
@@ -13,7 +13,7 @@ export default function ChatPage() {
             texto: novaMensagem
         }
         // Depois é só colocar aqui a Chamada de um backend
-        setListaMensagens([            
+        setListaMensagens([
             mensagem,
             ...listaMensagens // Espalhamento
         ])
@@ -42,7 +42,7 @@ export default function ChatPage() {
                     width: '100%',
                     maxWidth: '1300px',
                     maxHeight: '95vh',
-                    padding: '32px', 
+                    padding: '32px',
                     margin: '16px',
                 }}
             >
@@ -60,7 +60,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listaMensagens} />
+                    <MensagemList mensagens={listaMensagens} setListaMensagens = {setListaMensagens} />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -125,8 +125,17 @@ function Header() {
     )
 }
 
-function MessageList(props) {
-    console.log('MessageList', props);
+function MensagemList(props) {
+    function removerMensagem (idExcluir) {
+        
+        const novaListaMensagem = props.mensagens.filter((msg) => {
+            return msg.id !== idExcluir
+        })
+        props.setListaMensagens(novaListaMensagem)
+        
+        
+    }
+    
     return (
         <Box
             tag="ul"
@@ -184,6 +193,32 @@ function MessageList(props) {
                             </Text>
                         </Box>
                         {mensagem.texto}
+                                
+                        <Button
+                            key={mensagem.id}
+                            iconName="FaTrashAlt"
+                            buttonColors={{
+                                contrastColor: appConfig.theme.colors.neutrals["500"],
+                                mainColor: appConfig.theme.colors.primary[500],
+                                mainColorLight: appConfig.theme.colors.primary[400],
+                                mainColorStrong: appConfig.theme.colors.primary[600],
+                            }}
+                            styleSheet={{
+                                position: "relative",
+                                top: "-17px",
+                                margin: "0 10px",
+                                float: "right",
+                                "hover": {                                    
+                                    "color": appConfig.theme.colors.neutrals["000"]
+                                },
+                            }}
+                            onClick={ (e) => {
+                                
+                                console.log('Clicou Excluir', mensagem.id)
+                                removerMensagem(mensagem.id)
+                            }}
+                        />
+
                     </Text>
                 )
             })}
