@@ -102,13 +102,21 @@ export default function ChatPage() {
                         />
                         <Button
                             label="Enviar"
-                            colorVariant='positive'
                             onClick={()=> handleNovaMensagem(mensagem)}
+                            buttonColors={{
+                                contrastColor: appConfig.theme.colors.neutrals["500"],
+                                mainColor: appConfig.theme.colors.primary[500],
+                                mainColorLight: appConfig.theme.colors.primary[400],
+                                mainColorStrong: appConfig.theme.colors.primary[600],
+                            }}
                             styleSheet={{
                                 marginRight: '12px',
                                 marginBottom: '7px',
                                 borderRadius: '5px',
                                 padding: '13px 8px',
+                                "hover": {
+                                    "color": appConfig.theme.colors.neutrals["000"]
+                                },
                             }}
                         />
 
