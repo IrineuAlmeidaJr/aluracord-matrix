@@ -60,7 +60,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MensagemList mensagens={listaMensagens} setListaMensagens = {setListaMensagens} />
+                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -100,6 +100,18 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
+                        <Button
+                            label="Enviar"
+                            colorVariant='positive'
+                            onClick={()=> handleNovaMensagem(mensagem)}
+                            styleSheet={{
+                                marginRight: '12px',
+                                marginBottom: '7px',
+                                borderRadius: '5px',
+                                padding: '13px 8px',
+                            }}
+                        />
+
                     </Box>
                 </Box>
             </Box>
@@ -126,27 +138,26 @@ function Header() {
 }
 
 function MensagemList(props) {
-    function removerMensagem (idExcluir) {
-        
+    function removerMensagem(idExcluir) {
+
         const novaListaMensagem = props.mensagens.filter((msg) => {
             return msg.id !== idExcluir
         })
         props.setListaMensagens(novaListaMensagem)
-        
-        
     }
-    
+
     return (
         <Box
             tag="ul"
             styleSheet={{
                 // overflowY: 'scroll',
-                'overflow-y': 'auto',
+                'overflow': 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
                 color: appConfig.theme.colors.neutrals["000"],
                 marginBottom: '16px',
+                "body:": "-webkit-scrollbar-thumb { background-color: black; outline: 1px;solid slategrey }"
             }}
         >
             {props.mensagens.map((mensagem) => {
@@ -193,7 +204,7 @@ function MensagemList(props) {
                             </Text>
                         </Box>
                         {mensagem.texto}
-                                
+
                         <Button
                             key={mensagem.id}
                             iconName="FaTrashAlt"
@@ -205,14 +216,14 @@ function MensagemList(props) {
                             }}
                             styleSheet={{
                                 position: "relative",
-                                top: "-17px",
+                                top: "-17px", // *** Ver uma solução melhor
                                 margin: "0 10px",
                                 float: "right",
-                                "hover": {                                    
+                                "hover": {
                                     "color": appConfig.theme.colors.neutrals["000"]
                                 },
                             }}
-                            onClick={ (e) => {
+                            onClick={(e) => {
                                 console.log('Clicou Excluir', mensagem.id)
                                 removerMensagem(mensagem.id)
                             }}
