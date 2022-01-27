@@ -141,7 +141,7 @@ function MensagemList(props) {
             tag="ul"
             styleSheet={{
                 // overflowY: 'scroll',
-                'overflow-y': 'scroll',
+                'overflow-y': 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -213,7 +213,6 @@ function MensagemList(props) {
                                 },
                             }}
                             onClick={ (e) => {
-                                
                                 console.log('Clicou Excluir', mensagem.id)
                                 removerMensagem(mensagem.id)
                             }}
