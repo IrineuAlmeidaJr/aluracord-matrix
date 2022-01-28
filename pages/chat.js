@@ -12,7 +12,7 @@ export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
     const [carregando, setCarregando] = React.useState('1');
-    const [imgCarregando, setImgCarregando] = React.useState('flex')
+    const [imgCarregando, setImgCarregando] = React.useState('block')
 
     React.useEffect(() => {
         supabaseClient
@@ -207,13 +207,11 @@ function MensagemList(props) {
             }}
         >
             <Image
-                src= 'https://igrejas.mmcontabilidade.com.br/images/wait.gif'
+                src= 'https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
                 styleSheet={{
                     display: props.img,
-                    'overflow': 'auto',
-                    width: '50%',
-                    marginLeft: '25%',
-                    marginBottom: '10%'
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
                 }}
             />
             {props.mensagens.map((mensagem) => {
