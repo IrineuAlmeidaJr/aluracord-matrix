@@ -11,14 +11,18 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
+    const [carregando, setCarregando] = React.useState('1');
+    const [imgCarregando, setImgCarregando] = React.useState('https://www.eurotecnologia.pt/assets/img/loader.gif')
 
     React.useEffect(() => {
-        supabaseClient 
+        supabaseClient
             .from('mensagens')
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
                 setListaMensagens(data)
+                setCarregando('1')
+                setImgCarregando('none')
             })
     }, []);
 
@@ -41,18 +45,23 @@ export default function ChatPage() {
                 ])
                 console.log('Criando mensagem', data)
             })
-       
+
         setMensagem('')
     }
 
     return (
         <Box
             styleSheet={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 backgroundColor: appConfig.theme.colors.primary[500],
                 backgroundImage: `url(https://images.pexels.com/photos/167699/pexels-photo-167699.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260)`,
-                backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000']
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backgroundBlendMode: 'multiply',
+                color: appConfig.theme.colors.neutrals['000'],
+                opacity: carregando
             }}
         >
             <Box
@@ -85,7 +94,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} />
+                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -182,23 +191,24 @@ function MensagemList(props) {
         const novaListaMensagem = props.mensagens.filter((msg) => {
             return msg.id !== idExcluir
         })
-        props.setListaMensagens(novaListaMensagem)        
+        props.setListaMensagens(novaListaMensagem)
     }
 
     return (
         <Box
             tag="ul"
             styleSheet={{
-                // overflowY: 'scroll',
                 'overflow': 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
                 color: appConfig.theme.colors.neutrals["000"],
                 marginBottom: '16px',
-                "body:": "-webkit-scrollbar-thumb { background-color: black; outline: 1px;solid slategrey }"
             }}
         >
+            <Image
+                src= {props.img}
+            />
             {props.mensagens.map((mensagem) => {
                 return (
                     <Text
@@ -243,7 +253,6 @@ function MensagemList(props) {
                             </Text>
                         </Box>
                         {mensagem.texto}
-
                         <Button
                             key={mensagem.id}
                             iconName="FaTrashAlt"
@@ -267,7 +276,6 @@ function MensagemList(props) {
                                 removerMensagem(mensagem.id)
                             }}
                         />
-
                     </Text>
                 )
             })}
