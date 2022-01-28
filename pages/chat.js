@@ -11,7 +11,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
-    const [carregando, setCarregando] = React.useState('1');
+    const [carregando, setCarregando] = React.useState('0.98');
     const [imgCarregando, setImgCarregando] = React.useState('block')
 
     React.useEffect(() => {
@@ -20,9 +20,12 @@ export default function ChatPage() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                setListaMensagens(data)
-                setCarregando('1')
-                setImgCarregando('none')
+                setInterval(() => {
+                    setListaMensagens(data)
+                    setCarregando('1')
+                    setImgCarregando('none')
+                }, 1000)
+                
             })
     }, []);
 
