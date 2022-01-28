@@ -27,7 +27,7 @@ export default function ChatPage() {
                     setCarregando('1')
                     setImgCarregando('none')
                     setEstado(false)
-                }, 1000)                
+                }, 1000)
             })
     }, []);
 
@@ -65,7 +65,7 @@ export default function ChatPage() {
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000'],                
+                color: appConfig.theme.colors.neutrals['000'],
             }}
         >
             <Box
@@ -76,12 +76,17 @@ export default function ChatPage() {
                     boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                     borderRadius: '5px',
                     backgroundColor: appConfig.theme.colors.neutrals[1200],
-                    height: '100%',
-                    width: '100%',
-                    maxWidth: '1300px',
+                    height: '100vh',
+                    width: '100vw',
+                    maxWidth: {
+                        lg: '95%',
+                        md: '95%',
+                        sm: '95%',
+                        xl: '1200px',
+                        xs: '95%'
+                    },
                     maxHeight: '95vh',
                     padding: '32px',
-                    margin: '16px',
                 }}
             >
                 <Header />
@@ -91,14 +96,14 @@ export default function ChatPage() {
                         display: 'flex',
                         flex: 1,
                         height: '80%',
+                        width: '100%',
                         backgroundColor: appConfig.theme.colors.neutrals[500],
                         flexDirection: 'column',
                         borderRadius: '5px',
                         padding: '16px',
                     }}
                 >
-
-                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} carregando={carregando} setCarregando={setCarregando} estado={estado} setEstado={estado}/>
+                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} carregando={carregando} setCarregando={setCarregando} estado={estado} setEstado={estado} />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -167,12 +172,13 @@ export default function ChatPage() {
 function Header() {
     return (
         <>
-            <Box styleSheet={{ 
-                width: '100%', 
-                marginBottom: '16px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between' }} >
+            <Box styleSheet={{
+                width: '100%',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+            }} >
                 <Text variant='heading5'>
                     Chat
                 </Text>
@@ -192,7 +198,7 @@ function Header() {
                             "color": appConfig.theme.colors.neutrals["000"]
                         },
                     }}
-                /> 
+                />
             </Box>
         </>
     )
@@ -219,7 +225,7 @@ function MensagemList(props) {
         <Box
             tag="ul"
             styleSheet={{
-                'overflow-y': 'auto',
+                'overflow-y': 'scroll',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -230,10 +236,11 @@ function MensagemList(props) {
             <Image
                 src= 'https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
                 styleSheet={{
-                    position: 'absolute',
                     display: props.img,
+                    position: 'relative',                    
                     marginLeft: 'auto',
                     marginRight: 'auto',
+                    marginTop: '-20vh'
                 }}
             />
             {props.mensagens.map((mensagem) => {
@@ -269,11 +276,11 @@ function MensagemList(props) {
                                     //     width: '35px',
                                     //     height:'35px',
                                     // }
-                                    
+
                                 }}
                                 src={`https://github.com/${mensagem.de}.png`}
                             />
-                             <Text 
+                            <Text
                                 tag="a"
                                 href={`https://github.com/${mensagem.de}.png`}
                                 styleSheet={{
@@ -293,8 +300,8 @@ function MensagemList(props) {
                                 }}
                                 tag="span"
                             >
-                                {(date.toLocaleDateString())} 
-                                {date.getHours()}                                
+                                {(date.toLocaleDateString())}
+                                {date.getHours()}
                             </Text>
                             <Text
                                 styleSheet={{
@@ -308,10 +315,10 @@ function MensagemList(props) {
                             </Text>
                         </Box>
                         <Box
-                            styleSheet={{                                 
+                            styleSheet={{
                                 marginRight: '80px',
                                 color: appConfig.theme.colors.neutrals[300],
-                                
+
                             }}
                         >
                             <Text
@@ -319,17 +326,17 @@ function MensagemList(props) {
                                     fontSize: '1em',
                                     marginRight: '25%',
                                     color: appConfig.theme.colors.neutrals[300],
-                                    
+
                                 }}
                             >
-                                {mensagem.texto}                        
-                            </Text> 
+                                {mensagem.texto}
+                            </Text>
                         </Box>
-                        
-                        
+
+
                         <Button
                             key={mensagem.id}
-                            disabled= {props.estado}
+                            disabled={props.estado}
                             iconName="FaTrashAlt"
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["500"],
@@ -355,6 +362,7 @@ function MensagemList(props) {
                     </Text>
                 )
             })}
+
         </Box>
     )
 }
