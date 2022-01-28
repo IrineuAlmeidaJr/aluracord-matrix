@@ -12,7 +12,7 @@ export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
     const [carregando, setCarregando] = React.useState('1');
-    const [imgCarregando, setImgCarregando] = React.useState('https://www.eurotecnologia.pt/assets/img/loader.gif')
+    const [imgCarregando, setImgCarregando] = React.useState('flex')
 
     React.useEffect(() => {
         supabaseClient
@@ -207,7 +207,14 @@ function MensagemList(props) {
             }}
         >
             <Image
-                src= {props.img}
+                src= 'https://igrejas.mmcontabilidade.com.br/images/wait.gif'
+                styleSheet={{
+                    display: props.img,
+                    'overflow': 'auto',
+                    width: '50%',
+                    marginLeft: '25%',
+                    marginBottom: '10%'
+                }}
             />
             {props.mensagens.map((mensagem) => {
                 return (
