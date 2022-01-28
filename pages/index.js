@@ -61,27 +61,37 @@ export default function PaginaInicial() {
                         width: '100%', maxWidth: '700px',
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        backgroundColor: appConfig.theme.colors.neutrals[700]                      
                     }}
                 >
                     {/* Formulário */}
                     <Box
                         as="form"
-                        onSubmit={ function (infosDoEvento) {
+                        onSubmit={function (infosDoEvento) {
                             // Abaixo vou impedir o comportamento padrão
                             // de recarregar a página.
-                            infosDoEvento.preventDefault() 
-                            console.log('Alguem submeteu o form')                            
+                            infosDoEvento.preventDefault()
+                            console.log('Alguem submeteu o form')
                             // Forma de Chamar a Página (no caso chat)
                             // window.location.href = '/chat'
                             const numLetras = username.length
-                            if(numLetras > 2) {
+                            if (numLetras > 2) {
                                 roteamento.push('/chat')
-                            } 
+                            }
                         }}
                         styleSheet={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px', 'flex-grow': espacoFotoUsuario
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: {
+                                xs: '100%',
+                                sm: '50%'
+                            },
+                            textAlign: 'center',
+                            marginBottom: '32px',
+                            'flex-grow': espacoFotoUsuario,
+                            transition: '0.3s'
                         }}
                     >
                         <Titulo tag="h2">Boas vindas de volta!</Titulo>
@@ -100,7 +110,7 @@ export default function PaginaInicial() {
                                 // Troca o valor da variável abaixo como set,
                                 // só mudar ao terminar onChange
                                 setUsername(valor)
-                                if(valor.length > 2) {
+                                if (valor.length > 2) {
                                     setDisplayFotoUsuario('flex')
                                     setEspacoFotoUsuario('0')
                                     setImagePadrao(`https://github.com/${valor}.png`)
@@ -152,19 +162,20 @@ export default function PaginaInicial() {
                             borderColor: appConfig.theme.colors.neutrals["1100"],
                             borderRadius: '10px',
                             flex: 1,
-                            minHeight: '240px',
+                            minHeight: '240px'
                         }}
                     >
                         <Image
                             styleSheet={{
+                                height: '166px',
                                 borderRadius: '50%',
                                 marginBottom: '16px',
                             }}
                             src={imagePadrao}
-                            //src={`https://github.com/${username}.png`}
+                        //src={`https://github.com/${username}.png`}
                         />
 
-                                               
+
                         <Text
                             variant="body4"
                             styleSheet={{
@@ -183,13 +194,13 @@ export default function PaginaInicial() {
                             <Icon
                                 label="Icon Component"
                                 styleSheet={{
-                                    'margin-right': '10px'                                        
+                                    'margin-right': '10px'
                                 }}
                                 name='FaUserAlt'
                             />
-                            {username}                      
-                        </Text>                            
-                        
+                            {username}
+                        </Text>
+
                     </Box>
                     {/* Photo Area */}
                 </Box>

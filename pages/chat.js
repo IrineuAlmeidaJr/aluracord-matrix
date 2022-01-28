@@ -169,12 +169,20 @@ function Header() {
 }
 
 function MensagemList(props) {
-    function removerMensagem(idExcluir) {
 
+    async function deleteMensagemBanco(idExcluir) {
+        await supabaseClient
+            .from('mensagens')
+            .delete()
+            .eq('id', idExcluir);
+    }
+
+    function removerMensagem(idExcluir) {
+        deleteMensagemBanco(idExcluir)
         const novaListaMensagem = props.mensagens.filter((msg) => {
             return msg.id !== idExcluir
         })
-        props.setListaMensagens(novaListaMensagem)
+        props.setListaMensagens(novaListaMensagem)        
     }
 
     return (
