@@ -11,8 +11,9 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
-    const [carregando, setCarregando] = React.useState('0.98');
+    const [carregando, setCarregando] = React.useState('0.3');
     const [imgCarregando, setImgCarregando] = React.useState('block')
+    const [estado, setEstado] = React.useState(true)
 
     React.useEffect(() => {
         supabaseClient
@@ -20,12 +21,13 @@ export default function ChatPage() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
+                setListaMensagens(data)
                 setInterval(() => {
-                    setListaMensagens(data)
+                    // setListaMensagens(data)
                     setCarregando('1')
                     setImgCarregando('none')
-                }, 1000)
-                
+                    setEstado(false)
+                }, 1000)                
             })
     }, []);
 
@@ -63,8 +65,7 @@ export default function ChatPage() {
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000'],
-                opacity: carregando
+                color: appConfig.theme.colors.neutrals['000'],                
             }}
         >
             <Box
@@ -97,7 +98,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} />
+                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} carregando={carregando} setCarregando={setCarregando} estado={estado} setEstado={estado}/>
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -151,6 +152,7 @@ export default function ChatPage() {
                                 borderRadius: '5px',
                                 padding: '13px 8px',
                                 "hover": {
+                                    transition: '500ms',
                                     "color": appConfig.theme.colors.neutrals["000"]
                                 },
                             }}
@@ -165,7 +167,12 @@ export default function ChatPage() {
 function Header() {
     return (
         <>
-            <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+            <Box styleSheet={{ 
+                width: '100%', 
+                marginBottom: '16px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between' }} >
                 <Text variant='heading5'>
                     Chat
                 </Text>
@@ -174,7 +181,18 @@ function Header() {
                     colorVariant='neutral'
                     label='Logout'
                     href="/"
-                />
+                    buttonColors={{
+                        contrastColor: appConfig.theme.colors.neutrals["500"],
+                        mainColor: appConfig.theme.colors.primary[500],
+                        mainColorLight: appConfig.theme.colors.primary[600]
+                    }}
+                    styleSheet={{
+                        "hover": {
+                            transition: '500ms',
+                            "color": appConfig.theme.colors.neutrals["000"]
+                        },
+                    }}
+                /> 
             </Box>
         </>
     )
@@ -201,7 +219,7 @@ function MensagemList(props) {
         <Box
             tag="ul"
             styleSheet={{
-                'overflow': 'auto',
+                'overflow-y': 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -212,12 +230,14 @@ function MensagemList(props) {
             <Image
                 src= 'https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
                 styleSheet={{
+                    position: 'absolute',
                     display: props.img,
                     marginLeft: 'auto',
                     marginRight: 'auto',
                 }}
             />
             {props.mensagens.map((mensagem) => {
+                const date = new Date(mensagem.created_at)
                 return (
                     <Text
                         key={mensagem.id}
@@ -226,6 +246,8 @@ function MensagemList(props) {
                             borderRadius: '5px',
                             padding: '6px',
                             marginBottom: '12px',
+                            opacity: props.carregando,
+                            'word-wrap': 'break-word',
                             hover: {
                                 backgroundColor: appConfig.theme.colors.neutrals[700],
                             }
@@ -243,26 +265,71 @@ function MensagemList(props) {
                                     borderRadius: '50%',
                                     display: 'inline-block',
                                     marginRight: '8px',
+                                    // hover: {
+                                    //     width: '35px',
+                                    //     height:'35px',
+                                    // }
+                                    
                                 }}
                                 src={`https://github.com/${mensagem.de}.png`}
                             />
-                            <Text tag="strong">
+                             <Text 
+                                tag="a"
+                                href={`https://github.com/${mensagem.de}.png`}
+                                styleSheet={{
+                                    // fontSize: '1em',
+                                    textDecoration: 'none',
+                                    color: appConfig.theme.colors.neutrals["000"],
+                                    'font-weight': 'bold'
+                                }}
+                            >
                                 {mensagem.de}
                             </Text>
                             <Text
                                 styleSheet={{
-                                    fontSize: '10px',
+                                    fontSize: '11px',
                                     marginLeft: '8px',
                                     color: appConfig.theme.colors.neutrals[300],
                                 }}
                                 tag="span"
                             >
-                                {(new Date().toLocaleDateString())}
+                                {(date.toLocaleDateString())} 
+                                {date.getHours()}                                
+                            </Text>
+                            <Text
+                                styleSheet={{
+                                    fontSize: '11px',
+                                    marginLeft: '8px',
+                                    color: appConfig.theme.colors.neutrals[300],
+                                }}
+                                tag="span"
+                            >
+                                {date.getHours()}:{date.getMinutes()}
                             </Text>
                         </Box>
-                        {mensagem.texto}
+                        <Box
+                            styleSheet={{                                 
+                                marginRight: '80px',
+                                color: appConfig.theme.colors.neutrals[300],
+                                
+                            }}
+                        >
+                            <Text
+                                styleSheet={{
+                                    fontSize: '1em',
+                                    marginRight: '25%',
+                                    color: appConfig.theme.colors.neutrals[300],
+                                    
+                                }}
+                            >
+                                {mensagem.texto}                        
+                            </Text> 
+                        </Box>
+                        
+                        
                         <Button
                             key={mensagem.id}
+                            disabled= {props.estado}
                             iconName="FaTrashAlt"
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["500"],
@@ -276,11 +343,12 @@ function MensagemList(props) {
                                 margin: "0 10px",
                                 float: "right",
                                 "hover": {
+                                    transition: '500ms',
                                     "color": appConfig.theme.colors.neutrals["000"]
                                 },
                             }}
                             onClick={(e) => {
-                                console.log('Clicou Excluir', mensagem.id)
+                                // console.log('Clicou Excluir', mensagem.id)
                                 removerMensagem(mensagem.id)
                             }}
                         />
