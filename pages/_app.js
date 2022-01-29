@@ -48,6 +48,21 @@ function GlobalStyle() {
         * #buttonEfeitoApertar :active {
             transform: translateY(2px);
         }
+
+        /* Estilo do SweetAlert */
+       
+        .swal-modal {
+            background-color: #2b3b46;
+        }
+
+        .swal-title {
+            color: white;
+        }  
+
+        .swal-text {
+            color: white;
+        }  
+
     `}</style>
     );
 }

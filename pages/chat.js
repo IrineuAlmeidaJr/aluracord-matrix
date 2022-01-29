@@ -1,10 +1,11 @@
 import { Box, Text, TextField, Icon, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import swal from 'sweetalert';
 import { createClient } from '@supabase/supabase-js'
-import imgBackground from '../imagens/background.jpeg'
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/componentes/ButtonSendSticker'
+// import imgBackground from '../imagens/background.jpeg'
 
 // Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4NjA1OCwiZXhwIjoxOTU4ODYyMDU4fQ.eAMsoDvguB-_GBpBERnOx0Fa3GVNOUwqOnIXRRdSZr8'
@@ -147,6 +148,7 @@ export default function ChatPage() {
                         img={imgCarregando} setImg={setImgCarregando}
                         carregando={carregando} setCarregando={setCarregando}
                         estado={estado} setEstado={estado}
+                        usuarioLogado = {usuarioLogado}
                     />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
@@ -266,12 +268,34 @@ function MensagemList(props) {
             .eq('id', idExcluir);
     }
 
-    function removerMensagem(idExcluir) {
-        deleteMensagemBanco(idExcluir)
-        const novaListaMensagem = props.mensagens.filter((msg) => {
-            return msg.id !== idExcluir
-        })
-        props.setListaMensagens(novaListaMensagem)
+    async function retornaMensagemBanco(idExcluir, nomeUsuario) {
+        await supabaseClient
+            .from('mensagens')
+            .select('de')
+            .eq('id', idExcluir)  
+            .then(({ data }) => {
+                // console.log(data)
+                if(data.length > 0) {
+                    if(data[0].de === nomeUsuario) {
+                        deleteMensagemBanco(idExcluir)
+                        const novaListaMensagem = props.mensagens.filter((msg) => {
+                            return msg.id !== idExcluir
+                        })
+                        props.setListaMensagens(novaListaMensagem)
+                    } else {
+                        swal({
+                            title:'Não pode deletar!',
+                            text: 'Essa mensagem não é sua...',
+                            icon: 'error',
+                            button: false
+                        })
+                    }
+                } 
+            })          
+    }
+
+    function removerMensagem(idExcluir, nomeUsuario) {
+        retornaMensagemBanco(idExcluir, nomeUsuario)
     }
 
     return (
@@ -405,7 +429,6 @@ function MensagemList(props) {
                             </Text>
                         </Box>
 
-
                         <Button
                             key={mensagem.id}
                             disabled={props.estado}
@@ -428,7 +451,7 @@ function MensagemList(props) {
                             }}
                             onClick={(e) => {
                                 // console.log('Clicou Excluir', mensagem.id)
-                                removerMensagem(mensagem.id)
+                                removerMensagem(mensagem.id, props.usuarioLogado)
                             }}
                         />
                     </Text>
