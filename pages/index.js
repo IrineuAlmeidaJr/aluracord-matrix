@@ -76,7 +76,7 @@ export default function PaginaInicial() {
                             // window.location.href = '/chat'
                             const numLetras = username.length
                             if (numLetras > 2) {
-                                roteamento.push('/chat')
+                                roteamento.push(`/chat?username=${username}`)
                             }
                         }}
                         styleSheet={{

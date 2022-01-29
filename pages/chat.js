@@ -2,13 +2,31 @@ import { Box, Text, TextField, Icon, Image, Button } from '@skynexui/components'
 import React from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js'
+import imgBackground from '../imagens/background.jpeg'
+import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/componentes/ButtonSendSticker'
 
 // Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4NjA1OCwiZXhwIjoxOTU4ODYyMDU4fQ.eAMsoDvguB-_GBpBERnOx0Fa3GVNOUwqOnIXRRdSZr8'
 const SUPABASE_URL = 'https://vvgqvqwhqjxpduwapjzq.supabase.co'
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        // A mensagem vem dentro de 'new', ser quiser
+        // ver melhor exibir elemento no cosole, para
+        // visualizar o que veio.
+        .on('INSERT', (respostaLive) => {
+            adicionaMensagem(respostaLive.new)
+        })
+        .subscribe();
+}
+
 export default function ChatPage() {
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username
+
     const [mensagem, setMensagem] = React.useState(''); // *** Importante passar um valor inicial
     const [listaMensagens, setListaMensagens] = React.useState([]);
     const [carregando, setCarregando] = React.useState('0.3');
@@ -29,13 +47,35 @@ export default function ChatPage() {
                     setEstado(false)
                 }, 1000)
             })
+        escutaMensagensEmTempoReal((novaMensagem) => {
+            // setListaMensagens([
+            //     data[0],
+            //     ...listaMensagens // Espalhamento
+            // ])
+            // Quando quero reusar um valor de referência (objeto/array)
+            // Passar uma função pro setState
+            /*
+                Passamos por função, tiramos o array,
+                pois, no React ia só aparecer a última
+                mensagem que escrevi ou recebi.
+                Ai dentro da função retornamos um array.
+                Desta forma ele irá sempre passar o valor
+                atual da lista.
+            */
+            setListaMensagens((valorAtualDaLista) => {
+                return [
+                    novaMensagem,
+                    ...valorAtualDaLista
+                ]
+            })
+        });
     }, []);
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
             // ID gerando no banco de dados (autocomplete) 
             // id: listaMensagens.length + 1,
-            de: 'irineualmeidajr',
+            de: usuarioLogado,
             texto: novaMensagem
         }
         // Depois é só colocar aqui a Chamada de um backend
@@ -44,13 +84,12 @@ export default function ChatPage() {
             // No isert tem que ser objetos com os mesmos campos
             .insert([mensagem])
             .then(({ data }) => {
-                setListaMensagens([
-                    data[0],
-                    ...listaMensagens // Espalhamento
-                ])
-                console.log('Criando mensagem', data)
+                // setListaMensagens([
+                //     data[0],
+                //     ...listaMensagens // Espalhamento
+                // ])
+                // console.log('Criando mensagem', data)
             })
-
         setMensagem('')
     }
 
@@ -61,7 +100,7 @@ export default function ChatPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: appConfig.theme.colors.primary[500],
-                backgroundImage: `url(https://images.pexels.com/photos/167699/pexels-photo-167699.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260)`,
+                backgroundImage: `url(https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/background.jpeg?raw=true)`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'multiply',
@@ -82,7 +121,7 @@ export default function ChatPage() {
                         lg: '95%',
                         md: '95%',
                         sm: '95%',
-                        xl: '1200px',
+                        xl: '1100px',
                         xs: '95%'
                     },
                     maxHeight: '95vh',
@@ -103,7 +142,12 @@ export default function ChatPage() {
                         padding: '16px',
                     }}
                 >
-                    <MensagemList mensagens={listaMensagens} setListaMensagens={setListaMensagens} img={imgCarregando} setImg={setImgCarregando} carregando={carregando} setCarregando={setCarregando} estado={estado} setEstado={estado} />
+                    <MensagemList
+                        mensagens={listaMensagens} setListaMensagens={setListaMensagens}
+                        img={imgCarregando} setImg={setImgCarregando}
+                        carregando={carregando} setCarregando={setCarregando}
+                        estado={estado} setEstado={estado}
+                    />
                     {/* {listaMensagens.map((msgAtual) => 
                         <li key={msgAtual.id}> 
                             {msgAtual.de}: {msgAtual.texto}
@@ -142,8 +186,17 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
+                        {/* CalBack */}
+                        <ButtonSendSticker
+                            // Recebe o sticker do componente ButtonSendSticker.js
+                            onsStickerClick={(sticker) => {
+                                // console.log('[USANDO UM COMPONENTE] Salvar esse sticker no banco', sticker)
+                                handleNovaMensagem(`:sticker:${sticker}`)
+                            }}
+                        />
                         <Button
-                            label="Enviar"
+                            id='buttonEfeitoApertar'
+                            label="⏎"
                             onClick={() => handleNovaMensagem(mensagem)}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["500"],
@@ -155,7 +208,7 @@ export default function ChatPage() {
                                 marginRight: '12px',
                                 marginBottom: '7px',
                                 borderRadius: '5px',
-                                padding: '13px 8px',
+                                padding: '13px 13px',
                                 "hover": {
                                     transition: '500ms',
                                     "color": appConfig.theme.colors.neutrals["000"]
@@ -234,10 +287,10 @@ function MensagemList(props) {
             }}
         >
             <Image
-                src= 'https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
+                src='https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
                 styleSheet={{
                     display: props.img,
-                    position: 'relative',                    
+                    position: 'relative',
                     marginLeft: 'auto',
                     marginRight: 'auto',
                     marginTop: '-20vh'
@@ -329,7 +382,27 @@ function MensagemList(props) {
 
                                 }}
                             >
-                                {mensagem.texto}
+                                {mensagem.texto.startsWith(':sticker:')
+                                    ? (
+                                        <Image
+                                            src={mensagem.texto.replace(':sticker:', '')}
+                                            styleSheet={{
+                                                maxWidth: {
+                                                    md: '400px',
+                                                    sm: '300px',
+                                                    xs: '238px'
+                                                },
+                                                marginLeft: {
+                                                    sm: '25px',
+                                                    xs: '0px'
+                                                }
+                                            }}
+                                        />
+                                    )
+                                    : (
+                                        mensagem.texto
+                                    )}
+
                             </Text>
                         </Box>
 
@@ -346,7 +419,7 @@ function MensagemList(props) {
                             }}
                             styleSheet={{
                                 position: "relative",
-                                top: "-17px", // *** Ver uma solução melhor
+                                top: "-15px", // *** Ver uma solução melhor
                                 margin: "0 10px",
                                 float: "right",
                                 "hover": {

@@ -23,10 +23,10 @@ function GlobalStyle() {
 
         *::-webkit-scrollbar-thumb {
             background-color: #1d5b72;
-            margin: 10px;
             border-radius: 20px;
             border: 3px solid #233138;
         }
+        
         
         body {
             font-family: 'Open Sans', sans-serif;
@@ -44,6 +44,10 @@ function GlobalStyle() {
             flex: 1;
         }
         /* ./App fit Height */ 
+
+        * #buttonEfeitoApertar :active {
+            transform: translateY(2px);
+        }
     `}</style>
     );
 }
