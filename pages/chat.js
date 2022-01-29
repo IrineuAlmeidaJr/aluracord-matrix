@@ -354,7 +354,6 @@ function MensagemList(props) {
                                 tag="span"
                             >
                                 {(date.toLocaleDateString())}
-                                {date.getHours()}
                             </Text>
                             <Text
                                 styleSheet={{
@@ -364,7 +363,7 @@ function MensagemList(props) {
                                 }}
                                 tag="span"
                             >
-                                {date.getHours()}:{date.getMinutes()}
+                                {date.getHours().toString().padStart(2, '0')}:{date.getMinutes().toString().padStart(2, '0')}
                             </Text>
                         </Box>
                         <Box
