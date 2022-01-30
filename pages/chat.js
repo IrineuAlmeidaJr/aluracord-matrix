@@ -5,7 +5,7 @@ import swal from 'sweetalert';
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/componentes/ButtonSendSticker'
-// import imgBackground from '../imagens/background.jpeg'
+// import imgBackground from '../src/images/background.jpeg'
 
 // Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4NjA1OCwiZXhwIjoxOTU4ODYyMDU4fQ.eAMsoDvguB-_GBpBERnOx0Fa3GVNOUwqOnIXRRdSZr8'
@@ -129,7 +129,9 @@ export default function ChatPage() {
                     padding: '32px',
                 }}
             >
-                <Header />
+                <Header
+                    usuarioLogado = {usuarioLogado}
+                />
                 <Box
                     styleSheet={{
                         position: 'relative',
@@ -224,23 +226,41 @@ export default function ChatPage() {
     )
 }
 
-function Header() {
+function Header(props) {
     return (
         <>
-            <Box styleSheet={{
-                width: '100%',
-                marginBottom: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }} >
-                <Text variant='heading5'>
-                    Chat
+            <Box 
+                styleSheet={{
+                    width: '100%',
+                    marginBottom: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    // justifyContent: 'space-between'
+                }} 
+            >
+                <Image
+                   styleSheet={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
+                    marginRight: '8px',
+                }}
+                src={`https://github.com/${props.usuarioLogado}.png`}
+                />
+                <Text 
+                    variant='heading4'
+                    styleSheet={{
+                        'flex-grow': '1',
+                        fontSize: '1em'
+                    }}
+                >
+                    Bem-vindo {props.usuarioLogado} 
                 </Text>
                 <Button
                     variant='tertiary'
                     colorVariant='neutral'
                     label='Logout'
+                    size='lg'
                     href="/"
                     buttonColors={{
                         contrastColor: appConfig.theme.colors.neutrals["500"],
@@ -248,7 +268,7 @@ function Header() {
                         mainColorLight: appConfig.theme.colors.primary[600]
                     }}
                     styleSheet={{
-                        "hover": {
+                        hover: {
                             transition: '500ms',
                             "color": appConfig.theme.colors.neutrals["000"]
                         },
@@ -330,6 +350,7 @@ function MensagemList(props) {
                             borderRadius: '5px',
                             padding: '6px',
                             marginBottom: '12px',
+                            marginRight: '12px',
                             opacity: props.carregando,
                             'word-wrap': 'break-word',
                             hover: {
@@ -359,7 +380,7 @@ function MensagemList(props) {
                             />
                             <Text
                                 tag="a"
-                                href={`https://github.com/${mensagem.de}.png`}
+                                href={`https://github.com/${mensagem.de}`}
                                 styleSheet={{
                                     // fontSize: '1em',
                                     textDecoration: 'none',
