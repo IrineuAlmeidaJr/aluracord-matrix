@@ -75,25 +75,33 @@ export default function ChatPage() {
     }, []);
 
     function handleNovaMensagem(novaMensagem) {
-        const mensagem = {
-            // ID gerando no banco de dados (autocomplete) 
-            // id: listaMensagens.length + 1,
-            de: usuarioLogado,
-            texto: novaMensagem
-        }
-        // Depois é só colocar aqui a Chamada de um backend
-        supabaseClient
-            .from('mensagens')
-            // No isert tem que ser objetos com os mesmos campos
-            .insert([mensagem])
-            .then(({ data }) => {
-                // setListaMensagens([
-                //     data[0],
-                //     ...listaMensagens // Espalhamento
-                // ])
-                // console.log('Criando mensagem', data)
+        if(novaMensagem.length) {
+            const mensagem = {
+                // ID gerando no banco de dados (autocomplete) 
+                // id: listaMensagens.length + 1,
+                de: usuarioLogado,
+                texto: novaMensagem
+            }
+            // Depois é só colocar aqui a Chamada de um backend
+            supabaseClient
+                .from('mensagens')
+                // No isert tem que ser objetos com os mesmos campos
+                .insert([mensagem])
+                .then(({ data }) => {
+                    // setListaMensagens([
+                    //     data[0],
+                    //     ...listaMensagens // Espalhamento
+                    // ])
+                    // console.log('Criando mensagem', data)
+                })
+            setMensagem('')
+        } else {
+            swal({
+                title:'Digite algo!',
+                text: 'Mensagem vazia, escreva algo ou envie um sticker...',
+                icon: 'info',
             })
-        setMensagem('')
+        }
     }
 
     return (

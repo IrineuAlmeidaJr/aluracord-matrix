@@ -63,6 +63,20 @@ function GlobalStyle() {
             color: white;
         }  
 
+        .swal-button {
+            color: #313D49;
+            width: 100px;
+            padding: 7px 19px;
+            border-radius: 5px;
+            background-color: #5cbbc1;
+            font-size: 12px;
+        }
+
+        .swal-button:hover {
+            color: #313D49;
+            background-color: black;
+        }
+
     `}</style>
     );
 }

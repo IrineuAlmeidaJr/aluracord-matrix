@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Text, Image } from '@skynexui/components';
+import swal from 'sweetalert';
 import appConfig from '../../config.json';
 
 export function MensagemList(props) {
