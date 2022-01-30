@@ -6,7 +6,7 @@
 
 
 ## 📺 Imagem
-![tela](https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/tela.png?raw=true)
+![tela](https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/GravaçãoTela.gif?raw=true)
  
  
 ## Instalação
