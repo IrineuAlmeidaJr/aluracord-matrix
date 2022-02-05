@@ -104,6 +104,12 @@ export default function ChatPage() {
         }
     }
 
+    const handleChange = (event) => {
+        const valor = event.target.value
+        event.preventDefault
+        setMensagem(valor)
+    }
+
     return (
         <Box
             styleSheet={{
@@ -111,7 +117,7 @@ export default function ChatPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: appConfig.theme.colors.primary[500],
-                backgroundImage: `url(https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/background.jpeg?raw=true)`,
+                backgroundImage: `url(/images/background.jpeg)`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundBlendMode: 'multiply',
@@ -155,6 +161,7 @@ export default function ChatPage() {
                         padding: '16px',
                     }}
                 >
+                    
                     <MensagemList
                         mensagens={listaMensagens} setListaMensagens={setListaMensagens}
                         img={imgCarregando} setImg={setImgCarregando}
@@ -177,17 +184,13 @@ export default function ChatPage() {
                         }}
                     >
                         <TextField
+                            tag='input'
                             value={mensagem}
                             onChange={(event) => {
                                 const valor = event.target.value;
                                 setMensagem(valor)
                             }}
-                            onKeyPress={(event) => {
-                                if (event.key === 'Enter') {
-                                    event.preventDefault();
-                                    handleNovaMensagem(mensagem);
-                                }
-                            }}
+                            onKeyPress={ handleChange }
                             placeholder="Insira sua mensagem aqui..."
                             type="textarea"
                             styleSheet={{

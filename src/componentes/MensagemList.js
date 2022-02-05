@@ -63,7 +63,7 @@ export function MensagemList(props) {
             }}
         >
             <Image
-                src='https://github.com/IrineuAlmeidaJr/aluracord-matrix/blob/main/imagens/wait.gif?raw=true'
+                src='/images/wait.gif'
                 styleSheet={{
                     display: props.img,
                     position: 'relative',
@@ -72,6 +72,7 @@ export function MensagemList(props) {
                     marginTop: '-20vh'
                 }}
             />
+            {console.log('passou aqui')}
             {props.mensagens.map((mensagem) => {
                 const date = new Date(mensagem.created_at)
                 return (
